@@ -1,4 +1,4 @@
-*vim_keywordprg_commands.txt* *keywordprg_commands*
+*vim_keywordprg_commands.txt* *keywordprg_commands* *keywordprg-commands*
 
 A simple, functional Neovim/Vim "keywordprg command" authoring utility
 
