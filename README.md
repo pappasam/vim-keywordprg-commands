@@ -55,9 +55,9 @@ Use `g:vim_keywordprg_commands` to create and configure new keywordprg commands.
 
 Creating commands is super easy, but this plugin does come with some command implementations to get you started:
 
-* :Def -> look up a word's English definition using [dict gcide](https://packages.debian.org/stretch/dict-gcide).
-* :Syn -> look up a word's English synonyms using [dict moby-thesaurus](https://packages.debian.org/sid/text/dict-moby-thesaurus).
-* :Pydoc -> look up a Python keyword using [pydoc](https://docs.python.org/3.8/library/pydoc.html).
+* `:Def` look up a word's English definition using [dict gcide](https://packages.debian.org/stretch/dict-gcide).
+* `:Syn` look up a word's English synonyms using [dict moby-thesaurus](https://packages.debian.org/sid/text/dict-moby-thesaurus).
+* `:Pydoc` look up a Python keyword using [pydoc](https://docs.python.org/3.8/library/pydoc.html).
 
 ## Notes
 
