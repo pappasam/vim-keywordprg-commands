@@ -85,10 +85,10 @@ filetype, place your desired filetype in this configuration variable.
 By default, this plugin creates the following keywordprg commands:
 
 :Def                                                                     *:Def*
-  Look up a word's English definition using dict gcide.
+  Look up a word's English definition using dict-wn.
 
 :Syn                                                                     *:Syn*
-  Look up a word's English synonyms using dict moby-thesaurus.
+  Look up a word's English synonyms using dict-moby-thesaurus.
 
 :Pydoc                                                                 *:Pydoc*
   Look up a Python keyword using pydoc.

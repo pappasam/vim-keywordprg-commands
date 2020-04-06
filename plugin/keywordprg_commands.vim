@@ -7,7 +7,7 @@
 " License:        MIT
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:default_commands = {
-      \ 'Def': 'dict -d gcide %s',
+      \ 'Def': 'dict -d wn %s',
       \ 'Pydoc': ['pydoc %s', 'rst'],
       \ 'Syn': 'dict -d moby-thesaurus %s',
       \ }
