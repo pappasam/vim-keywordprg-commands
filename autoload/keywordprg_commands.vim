@@ -31,25 +31,32 @@ function! s:read_command_to_doc(word, command, command_name, ft) range
   let ft = a:ft == '' ? ft_keyword : printf('%s.%s', ft_keyword, a:ft)
   let cmd = printf(a:command, a:word)
 
+  " reuse keywordprg window if present
   if ft != &filetype
     call s:select_win_same_ft(ft)
   endif
 
+  " if buffer already exists, enter it...
+  if bufnr(fp) != -1
+    execute printf('silent! %s %s', ft == &filetype ? 'edit!' : 'split!', fp)
+    return
+  endif
+
+  " otherwise, create and configure it...
   execute printf('silent ! %s > %s', cmd, fp)
   let shell_error = v:shell_error
   execute printf('silent! %s %s', ft == &filetype ? 'edit!' : 'split!', fp)
   execute printf('set filetype=%s', ft)
-  execute printf('file %s', fp)
   execute printf('setlocal keywordprg=:%s', a:command_name)
   if shell_error
-    silent! set modifiable
-    call append(0, printf('No matches for "%s":', a:word))
-    call append(1, printf('  "%s" did not return any matches', cmd))
+    silent! call append(0, printf('No matches for "%s":', a:word))
+    silent! call append(1, printf('  "%s" did not return any matches', cmd))
   endif
-  set buftype=nowrite nomodifiable noswapfile readonly nomodified nobuflisted
+  silent write!
   nnoremap <silent> <buffer> d <C-d>
   nnoremap <silent> <buffer> u <C-u>
   nnoremap <silent> <buffer> q :q<CR>
+  setlocal noswapfile nobuflisted nomodifiable readonly
   redraw!
 endfunction
 
