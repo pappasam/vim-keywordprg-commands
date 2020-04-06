@@ -7,6 +7,20 @@
 " License:        MIT
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+function! s:select_win_same_ft(expected_ft)
+  let current_tab = tabpagenr()
+  let current_window = winnr()
+
+  for window in getwininfo()
+    if window.tabnr == current_tab
+      if a:expected_ft == getwinvar(window.winnr, '&filetype')
+        execute window.winnr . 'wincmd w'
+        return
+      endif
+    endif
+  endfor
+endfunction
+
 function! s:read_command_to_doc(word, command, command_name, ft) range
   let fp = printf('%s/%s.%s',
         \ fnamemodify(tempname(), ':p:h'),
@@ -16,18 +30,21 @@ function! s:read_command_to_doc(word, command, command_name, ft) range
   let ft_keyword = 'keywordprg' . a:command_name
   let ft = a:ft == '' ? ft_keyword : printf('%s.%s', ft_keyword, a:ft)
   let cmd = printf(a:command, a:word)
+
+  if ft != &filetype
+    call s:select_win_same_ft(ft)
+  endif
+
   execute printf('silent ! %s > %s', cmd, fp)
   let shell_error = v:shell_error
   execute printf('silent! %s %s', ft == &filetype ? 'edit!' : 'split!', fp)
-  execute 'set filetype=' . ft
-  execute 'file ' . fp
-  execute 'setlocal keywordprg=:' . a:command_name
+  execute printf('set filetype=%s', ft)
+  execute printf('file %s', fp)
+  execute printf('setlocal keywordprg=:%s', a:command_name)
   if shell_error
-    set modifiable
-    let msg0 = printf('No matches for "%s":', a:word)
-    let failure = append(0, msg0)
-    let msg1 = printf('  "%s" did not return any matches', cmd)
-    let failure = append(1, msg1)
+    silent! set modifiable
+    call append(0, printf('No matches for "%s":', a:word))
+    call append(1, printf('  "%s" did not return any matches', cmd))
   endif
   set buftype=nowrite nomodifiable noswapfile readonly nomodified nobuflisted
   nnoremap <silent> <buffer> d <C-d>
