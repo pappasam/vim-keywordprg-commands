@@ -1,0 +1,123 @@
+*vim_keywordprg_commands.txt* *keywordprg_commands*
+
+A simple, functional Neovim/Vim "keywordprg command" authoring utility
+
+Author: Samuel Roeca
+
+Table of Contents                                     *vim-keywordprg-commands*
+
+1. Introduction ....................... |vim-keywordprg-commands-intro|
+2. Configuration ...................... |vim-keywordprg-commands-configuration|
+3. Commands ........................... |vim-keywordprg-commands-commands|
+4. Mappings ........................... |vim-keywordprg-commands-mappings|
+5. Credits ............................ |vim-keywordprg-commands-credits|
+
+==============================================================================
+1. INTRODUCTION                                     *keywordprg-commands-intro*
+
+|vim-keywordprg-commands| makes it easy to write keywordprg commands. If
+you have a command line program that you want to use as a keywordprg, this
+plugin will quickly make that desire a reality.
+
+==============================================================================
+2. CONFIGURATION                            *keywordprg-commands-configuration*
+
+                                            *g:vim_keywordprg_commands*
+g:vim_keywordprg_commands~
+
+Type: Dictionary[String, Union[String, List[String]]]
+Default: defined in plugin/keywordprg_commands.vim
+
+If you have a command line program that you want to use to look up keywords,
+use this variable to configure it. The dictionary keys should be the names of a
+Vim commands that you want to create; their values are printf-formatted string
+representations of a command line program to associate with the Vim command
+provided in the Dictionary key.
+
+Example: dictionary lookups
+
+Assume you want to look up the definition of an English word. If you have the
+"dict" program installed locally along with the gcide dictionary, you can use
+the following configuration to create a Vim command named "Def" to look up
+English words: >
+
+  let g:vim_keywordprg_commands = {
+      \ 'Def': 'dict -d gcide %s',
+      }
+<
+"%s" will be replaced by the word you pass as an argument to the command. To
+look up the English definition for "cat", type: >
+
+  :Def cat
+<
+
+Example: pydoc
+
+Assume you want to use Python's "pydoc" utility to look up a Python keyword.
+Additionally, you'd like pydoc's output (which is written in reStructuredText)
+to be syntax highlighted. Use the following configuration: >
+
+  let g:vim_keywordprg_commands = {
+      \ 'Pydoc': ['pydoc %s', 'rst'],
+      }
+<
+Notice that the value is not a string, but is instead of list of 2 strings. The
+first list element represents the command line program (identical to our
+dictionary example). The second argument provides an optional filetype to
+associate with our documentation and take advantage of Vim's syntax
+highlighting. Now, to look up Python documentation for "class" with beautiful
+reStructuredText syntax highlighting, use the following Vim command: >
+
+  :Pydoc class
+<
+                                                  *g:vim_keywordprg_ft_default*
+g:vim_keywordprg_ft_default~
+
+Type: String
+Default: ''
+
+If, by default, you'd like to associate keywordprg commands with a particular
+filetype, place your desired filetype in this configuration variable.
+
+==============================================================================
+3. COMMANDS                                      *keywordprg-commands-commands*
+
+By default, this plugin creates the following keywordprg commands:
+
+:Def                                                                     *:Def*
+  Look up a word's English definition using dict gcide.
+
+:Syn                                                                     *:Syn*
+  Look up a word's English synonyms using dict moby-thesaurus.
+
+:Pydoc                                                                 *:Pydoc*
+  Look up a Python keyword using pydoc.
+
+It is trivial to write your own. Feel free to submit a pull request with
+anything useful keywordprg commands you come up with!
+
+==============================================================================
+4. MAPPINGS                                      *keywordprg-commands-mappings*
+
+This plugin provides no mappings of its own, but it is intended to be used
+alongside Vim's built-in keywordprg. You should associate keywordprg commands
+Vim's keywordprg configuration value. For the plugin's provided commands, this
+can be done in your init.vim/vimrc as follows: >
+
+  augroup custom_keywordprg
+    autocmd FileType markdown,rst,tex,txt setlocal keywordprg=:Def
+    autocmd FileType python setlocal keywordprg=:Pydoc
+  augroup end
+<
+
+For the above filetypes, if you type "K" while in normal mode, your keywordprg
+command will be used to look up the word under the cursor. If you type "K"
+while in visual mode, your keywordprg command will be used to look your visual
+selection.
+
+==============================================================================
+5. CREDITS                                        *keywordprg-commands-credits*
+
+This program was conceived of and written by Samuel Roeca.
+
+vim:tw=78:ts=8:ft=help:norl:
