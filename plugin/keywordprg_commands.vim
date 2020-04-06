@@ -7,18 +7,56 @@
 " License:        MIT
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let s:default_commands = {
-      \ 'Def': ['dict -d gcide %s', 'gitcommit'],
+      \ 'Def': 'dict -d gcide %s',
       \ 'Pydoc': ['pydoc %s', 'rst'],
-      \ 'Syn': ['dict -d moby-thesaurus %s', 'gitcommit'],
+      \ 'Syn': 'dict -d moby-thesaurus %s',
       \ }
 
-if !exists('g:vim_keywordprg_commands')
-  let g:vim_keywordprg_commands = {}
-elseif type(g:vim_keywordprg_commands) != v:t_dict
-  throw 'User-configured g:vim_keywordprg_commands must be Dict'
-endif
-let g:vim_keywordprg_commands = extend(
-      \ s:default_commands,
-      \ g:vim_keywordprg_commands)
+function! s:configure_constants()
+  if !exists('g:vim_keywordprg_commands')
+    let g:vim_keywordprg_commands = {}
+  elseif type(g:vim_keywordprg_commands) != v:t_dict
+    throw 'g:vim_keywordprg_commands must be Dict'
+  endif
+  let g:vim_keywordprg_commands = extend(
+        \ s:default_commands,
+        \ g:vim_keywordprg_commands,
+        \ )
 
-call keywordprg_commands#configure(g:vim_keywordprg_commands)
+  if !exists('g:vim_keywordprg_ft_default')
+    let g:vim_keywordprg_ft_default = ''
+  elseif type(g:vim_keywordprg_ft_default) != v:t_string
+    throw 'g:vim_keywordprg_ft_default must be a String'
+  endif
+endfunction
+
+function! s:configure_keyword_commands()
+  for [cmdname, value] in items(g:vim_keywordprg_commands)
+    if match(cmdname, '^[A-Z][A-Za-z0-9]*$') != 0
+      throw printf('"%s" does not begin with [A-Z]', cmdname)
+    endif
+
+    if type(value) == v:t_string
+      call keywordprg_commands#create(
+            \ cmdname,
+            \ value,
+            \ g:vim_keywordprg_ft_default,
+            \ )
+    elseif type(value) == v:t_list
+      call keywordprg_commands#create(
+            \ cmdname,
+            \ get(value, 0, ''),
+            \ get(value, 1, g:vim_keywordprg_ft_default),
+            \ )
+    else
+      throw printf('"%s" must be List or String', value)
+    endif
+  endfor
+endfunction
+
+try
+  call s:configure_constants()
+  call s:configure_keyword_commands()
+catch /.*/
+  throw printf('vim-keywordprg-commands: %s', v:exception)
+endtry

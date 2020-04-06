@@ -11,13 +11,24 @@ function! s:read_command_to_doc(word, command, command_name, ft) range
   let fp = printf('%s/%s.%s',
         \ fnamemodify(tempname(), ':p:h'),
         \ a:word,
-        \ a:command_name)
-  let ft = printf('%s.%s', a:command_name, a:ft == '' ? 'text' : a:ft)
-  execute printf('silent ! %s > %s', printf(a:command, a:word), fp)
+        \ a:command_name,
+        \ )
+  let ft_keyword = 'keywordprg' . a:command_name
+  let ft = a:ft == '' ? ft_keyword : printf('%s.%s', ft_keyword, a:ft)
+  let cmd = printf(a:command, a:word)
+  execute printf('silent ! %s > %s', cmd, fp)
+  let shell_error = v:shell_error
   execute printf('silent! %s %s', ft == &filetype ? 'edit!' : 'split!', fp)
   execute 'set filetype=' . ft
   execute 'file ' . fp
   execute 'setlocal keywordprg=:' . a:command_name
+  if shell_error
+    set modifiable
+    let msg0 = printf('No matches for "%s":', a:word)
+    let failure = append(0, msg0)
+    let msg1 = printf('  "%s" did not return any matches', cmd)
+    let failure = append(1, msg1)
+  endif
   set buftype=nowrite nomodifiable noswapfile readonly nomodified nobuflisted
   nnoremap <silent> <buffer> d <C-d>
   nnoremap <silent> <buffer> u <C-u>
@@ -34,15 +45,4 @@ function! keywordprg_commands#create(cmdname, cmd, filetype)
         \ a:cmdname,
         \ a:filetype,
         \ )
-endfunction
-
-function! keywordprg_commands#configure(commands)
-  for [cmdname, arguments] in items(a:commands)
-    if type(arguments) != v:t_list
-      throw 'Dict values in g:vim_keywordprg_commands must be of type List'
-    endif
-    let cmd = arguments[0]
-    let filetype = get(arguments, 1, '')
-    call keywordprg_commands#create(cmdname, cmd, filetype)
-  endfor
 endfunction
