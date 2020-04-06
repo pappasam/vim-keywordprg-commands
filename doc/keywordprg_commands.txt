@@ -105,6 +105,7 @@ Vim's keywordprg configuration value. For the plugin's provided commands, this
 can be done in your init.vim/vimrc as follows: >
 
   augroup custom_keywordprg
+    autocmd!
     autocmd FileType markdown,rst,tex,txt setlocal keywordprg=:Def
     autocmd FileType python setlocal keywordprg=:Pydoc
   augroup end
