@@ -24,7 +24,7 @@ I personally use [vim-packager](https://github.com/kristijanhusak/vim-packager),
 From within Vim, type:
 
 ```vim
-:help keywordprg-commands
+:help keywordprg_commands
 ```
 
 ## Key mappings
