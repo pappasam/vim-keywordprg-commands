@@ -6,6 +6,18 @@
 " Website:        https://github.com/pappasam/vim-keywordprg-commands
 " License:        MIT
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Setup:
+
+if exists("g:loaded_keywordprg_commands")
+  finish
+endif
+let g:loaded_keywordprg_commands = v:true
+let s:save_cpo = &cpo
+set cpo&vim
+
+" Configuration:
+
 let s:default_commands = {
       \ 'Def': 'dict -d wn %s',
       \ 'Pydoc': ['pydoc %s', 'rst'],
@@ -59,4 +71,9 @@ try
   call s:configure_keyword_commands()
 catch /.*/
   throw printf('vim-keywordprg-commands: %s', v:exception)
+finally
+  " Teardown:
+
+  let &cpo = s:save_cpo
+  unlet s:save_cpo
 endtry
