@@ -66,6 +66,8 @@ function! s:configure_keyword_commands()
   endfor
 endfunction
 
+" Finish:
+
 try
   call s:configure_constants()
   call s:configure_keyword_commands()
@@ -73,7 +75,6 @@ catch /.*/
   throw printf('vim-keywordprg-commands: %s', v:exception)
 finally
   " Teardown:
-
   let &cpo = s:save_cpo
   unlet s:save_cpo
 endtry
