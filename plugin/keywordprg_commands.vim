@@ -16,6 +16,12 @@ let g:loaded_keywordprg_commands = v:true
 let s:save_cpo = &cpo
 set cpo&vim
 
+function! s:warning(msg)
+  echohl WarningMsg
+  echom 'keywordprg_commands: ' . a:msg
+  echohl None
+endfunction
+
 " Configuration:
 
 let s:default_commands = {
@@ -45,7 +51,11 @@ endfunction
 function! s:configure_keyword_commands()
   for [cmdname, value] in items(g:vim_keywordprg_commands)
     if match(cmdname, '^[A-Z][A-Za-z0-9]*$') != 0
-      throw printf('"%s" does not begin with [A-Z]', cmdname)
+      call s:warning(printf(
+            \ 'skipping command "%s": does not begin with [A-Z]',
+            \ cmdname,
+            \ ))
+      continue
     endif
 
     if type(value) == v:t_string
@@ -61,7 +71,12 @@ function! s:configure_keyword_commands()
             \ get(value, 1, g:vim_keywordprg_ft_default),
             \ )
     else
-      throw printf('"%s" must be List or String', value)
+      call s:warning(printf(
+            \ 'skipping command "%s": "%s" must be either a List or String',
+            \ cmdname,
+            \ value,
+            \ ))
+      continue
     endif
   endfor
 endfunction
@@ -72,7 +87,7 @@ try
   call s:configure_constants()
   call s:configure_keyword_commands()
 catch /.*/
-  throw printf('vim-keywordprg-commands: %s', v:exception)
+  call s:warning(v:exception)
 finally
   " Teardown:
   let &cpo = s:save_cpo
