@@ -56,6 +56,9 @@ function! s:configure_keyword_commands()
             \ cmdname,
             \ ))
       continue
+    elseif exists(':' . cmdname)
+      call s:warning(printf('cannot define ":%s"; already defined', cmdname))
+      continue
     endif
 
     if type(value) == v:t_string
