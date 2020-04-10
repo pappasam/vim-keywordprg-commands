@@ -25,9 +25,9 @@ endfunction
 " Configuration:
 
 let s:default_commands = {
-      \ 'Def': 'dict -d wn %s',
+      \ 'DefEng': 'dict -d wn %s',
       \ 'Pydoc': ['pydoc %s', 'rst'],
-      \ 'Syn': 'dict -d moby-thesaurus %s',
+      \ 'SynEng': 'dict -d moby-thesaurus %s',
       \ }
 
 function! s:configure_constants()

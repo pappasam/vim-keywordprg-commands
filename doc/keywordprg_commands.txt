@@ -81,8 +81,8 @@ filetype, place your desired filetype in this configuration variable.
 
 By default, this plugin creates the following keywordprg commands:
 
-*:Def* look up a word's English definition using dict-wn
-*:Syn* look up a word's English synonyms using dict-moby-thesaurus.
+*:DefEng* look up a word's English definition using dict-wn
+*:SynEng* look up a word's English synonyms using dict-moby-thesaurus.
 *:Pydoc* look up a Python keyword using pydoc.
 
 It is trivial to write your own. Feel free to submit a pull request with
@@ -99,7 +99,7 @@ can be done in your init.vim/vimrc as follows: >
 
   augroup custom_keywordprg
     autocmd!
-    autocmd FileType markdown,rst,tex,txt setlocal keywordprg=:Def
+    autocmd FileType markdown,rst,tex,txt setlocal keywordprg=:Definition
     autocmd FileType python setlocal keywordprg=:Pydoc
   augroup end
 <

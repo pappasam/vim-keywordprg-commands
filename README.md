@@ -37,7 +37,7 @@ can be done in your init.vim / vimrc as follows:
 ```vim
 augroup custom_keywordprg
   autocmd!
-  autocmd FileType markdown,rst,tex,txt setlocal keywordprg=:Def
+  autocmd FileType markdown,rst,tex,txt setlocal keywordprg=:DefEng
   autocmd FileType python setlocal keywordprg=:Pydoc
 augroup end
 ```
@@ -55,8 +55,8 @@ Use `g:vim_keywordprg_commands` to create and configure new keywordprg commands.
 
 Creating commands is super easy, but this plugin does come with some command implementations to get you started:
 
-* `:Def` look up a word's English definition using [dict-wn](https://packages.debian.org/stretch/dict-wn). This uses a locally-installed version of [wordnet](https://wordnet.princeton.edu/).
-* `:Syn` look up a word's English synonyms using [dict-moby-thesaurus](https://packages.debian.org/sid/text/dict-moby-thesaurus). This uses a locally installed version of [moby-thesaurus](http://www.moby-thesaurus.org/).
+* `:DefEng` look up a word's English definition using [dict-wn](https://packages.debian.org/stretch/dict-wn). This uses a locally-installed version of [wordnet](https://wordnet.princeton.edu/).
+* `:SynEng` look up a word's English synonyms using [dict-moby-thesaurus](https://packages.debian.org/sid/text/dict-moby-thesaurus). This uses a locally installed version of [moby-thesaurus](http://www.moby-thesaurus.org/).
 * `:Pydoc` look up a Python keyword using [pydoc](https://docs.python.org/3.8/library/pydoc.html).
 
 ## Notes
