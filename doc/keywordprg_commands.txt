@@ -42,12 +42,11 @@ English words: >
   let g:vim_keywordprg_commands = {
       \ 'Def': 'dict -d gcide %s',
       }
-<
+
 "%s" will be replaced by the word you pass as an argument to the command. To
 look up the English definition for "cat", type: >
 
   :Def cat
-<
 
 Example: pydoc
 
@@ -58,7 +57,7 @@ to be syntax highlighted. Use the following configuration: >
   let g:vim_keywordprg_commands = {
       \ 'Pydoc': ['pydoc %s', 'rst'],
       }
-<
+
 Notice that the value is not a string, but is instead of list of 2 strings. The
 first list element represents the command line program (identical to our
 dictionary example). The second argument provides an optional filetype to
@@ -67,7 +66,7 @@ highlighting. Now, to look up Python documentation for "class" with beautiful
 reStructuredText syntax highlighting, use the following Vim command: >
 
   :Pydoc class
-<
+
 *g:vim_keywordprg_ft_default*
 Type: String
 Default: ''
@@ -99,10 +98,10 @@ can be done in your init.vim/vimrc as follows: >
 
   augroup custom_keywordprg
     autocmd!
-    autocmd FileType markdown,rst,tex,txt setlocal keywordprg=:Definition
+    autocmd FileType markdown,rst,tex,txt setlocal keywordprg=:DefEng
     autocmd FileType python setlocal keywordprg=:Pydoc
   augroup end
-<
+
 For the above filetypes, if you type "K" while in normal mode, your keywordprg
 command will be used to look up the word under the cursor. If you type "K"
 while in visual mode, your keywordprg command will be used to look your visual
