@@ -56,7 +56,7 @@ function! s:read_command_to_doc(word, command, command_name, ft) range
   nnoremap <silent> <buffer> d <C-d>
   nnoremap <silent> <buffer> u <C-u>
   nnoremap <silent> <buffer> q :q<CR>
-  setlocal noswapfile nobuflisted nomodifiable readonly
+  setlocal noswapfile nobuflisted nomodifiable readonly nospell
   redraw!
 endfunction
 
