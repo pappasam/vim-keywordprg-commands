@@ -14,7 +14,7 @@ function! s:select_win_same_ft(expected_ft)
   for window in getwininfo()
     if window.tabnr == current_tab
       if a:expected_ft == getwinvar(window.winnr, '&filetype')
-        execute window.winnr . 'wincmd w'
+        execute window.winnr .. 'wincmd w'
         return
       endif
     endif
@@ -62,11 +62,6 @@ endfunction
 
 function! keywordprg_commands#create(cmdname, cmd, filetype)
   execute printf(
-        \ "command! -nargs=1 %s call " .
-        \ "s:read_command_to_doc(<q-args>, '%s', '%s', '%s')",
-        \ a:cmdname,
-        \ a:cmd,
-        \ a:cmdname,
-        \ a:filetype,
-        \ )
+        \ "command! -nargs=1 %s call s:read_command_to_doc(<q-args>, '%s', '%s', '%s')",
+        \ a:cmdname, a:cmd, a:cmdname, a:filetype)
 endfunction

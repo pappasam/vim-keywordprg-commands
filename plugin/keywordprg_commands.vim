@@ -18,7 +18,7 @@ set cpo&vim
 
 function! s:warning(msg)
   echohl WarningMsg
-  echom 'keywordprg_commands: ' . a:msg
+  echom 'keywordprg_commands: ' .. a:msg
   echohl None
 endfunction
 
