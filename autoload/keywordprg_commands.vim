@@ -27,7 +27,7 @@ function! s:read_command_to_doc(word, command, command_name, ft) range
         \ a:word,
         \ a:command_name,
         \ )
-  let ft_keyword = 'keywordprg' . a:command_name
+  let ft_keyword = 'keywordprg' .. a:command_name
   let ft = a:ft == '' ? ft_keyword : printf('%s.%s', ft_keyword, a:ft)
   let cmd = printf(a:command, a:word)
 
