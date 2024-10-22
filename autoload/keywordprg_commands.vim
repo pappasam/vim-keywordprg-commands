@@ -7,6 +7,122 @@
 " License:        MIT
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+function! s:possible_singulars(word)
+  let singulars = []
+  let word = tolower(a:word)
+
+  " Common irregular plurals
+  let irregulars = {
+        \ 'children': 'child',
+        \ 'mice': 'mouse',
+        \ 'men': 'man',
+        \ 'women': 'woman',
+        \ 'teeth': 'tooth',
+        \ 'feet': 'foot',
+        \ 'geese': 'goose',
+        \ 'oxen': 'ox',
+        \ 'lice': 'louse',
+        \ 'phenomena': 'phenomenon',
+        \ 'criteria': 'criterion',
+        \ 'data': 'datum',
+        \ 'cacti': 'cactus',
+        \ 'indices': 'index',
+        \ 'matrices': 'matrix',
+        \ 'quizzes': 'quiz',
+        \ 'bases': 'basis',
+        \ 'analyses': 'analysis'
+        \ }
+
+  " Check for irregular plurals
+  if has_key(irregulars, word)
+    call add(singulars, irregulars[word])
+  else
+    " Rule 1: Remove 's' from the end
+    call add(singulars, word[:-2])
+
+    " Rule 2: Replace 'ies' with 'y'
+    if word =~# 'ies$'
+      call add(singulars, substitute(word, 'ies$', 'y', ''))
+    endif
+
+    " Rule 3: Replace 'es' with ''
+    if word =~# 'es$'
+      call add(singulars, substitute(word, 'es$', '', ''))
+    endif
+
+    " Rule 4: Replace 'ves' with 'f'
+    if word =~# 'ves$'
+      call add(singulars, substitute(word, 'ves$', 'f', ''))
+    endif
+
+    " Rule 5: Replace 'ves' with 'fe'
+    if word =~# 'ves$'
+      call add(singulars, substitute(word, 'ves$', 'fe', ''))
+    endif
+
+    " Rule 6: Replace 'i' with 'us'
+    if word =~# 'i$'
+      call add(singulars, substitute(word, 'i$', 'us', ''))
+    endif
+
+    " Rule 7: Replace 'a' with 'um'
+    if word =~# 'a$'
+      call add(singulars, substitute(word, 'a$', 'um', ''))
+    endif
+
+    " Rule 8: Replace 'ice' with 'ouse'
+    if word =~# 'ice$'
+      call add(singulars, substitute(word, 'ice$', 'ouse', ''))
+    endif
+
+    " Rule 9: Replace 'en' with '' (for words like 'oxen')
+    if word =~# 'en$'
+      call add(singulars, word[:-3])
+    endif
+
+    " Rule 10: Replace 'ices' with 'ex'
+    if word =~# 'ices$'
+      call add(singulars, substitute(word, 'ices$', 'ex', ''))
+    endif
+
+    " Rule 11: Replace 'eaux' with 'eau'
+    if word =~# 'eaux$'
+      call add(singulars, substitute(word, 'eaux$', 'eau', ''))
+    endif
+
+    " Rule 12: Replace 'ae' with 'a'
+    if word =~# 'ae$'
+      call add(singulars, substitute(word, 'ae$', 'a', ''))
+    endif
+
+    " Rule 13: Handle words ending in 'ies' but not converting to 'y'
+    if word =~# 'ies$' && len(word) > 4
+      let stem = word[:-4]
+      if stem =~# '[aeiou].$'
+        call add(singulars, stem . 'y')
+      endif
+    endif
+
+    " Rule 14: Handle words ending in 'oes'
+    if word =~# 'oes$'
+      call add(singulars, substitute(word, 'oes$', 'o', ''))
+    endif
+  endif
+
+  " Additional checks for words that might not be plural
+  let non_plural_endings = ['ss', 'us', 'is', 'sis']
+  for ending in non_plural_endings
+    if word =~# ending . '$'
+      call add(singulars, word)
+      break
+    endif
+  endfor
+
+  " Remove duplicates, empty strings, and the original word if it's in the list
+  call filter(singulars, 'v:val != "" && v:val != word')
+  return uniq(singulars)
+endfunction
+
 function! s:select_win_same_ft(expected_ft)
   let current_tab = tabpagenr()
   let current_window = winnr()
@@ -29,7 +145,6 @@ function! s:read_command_to_doc(word, command, command_name, ft) range
         \ )
   let ft_keyword = 'keywordprg' .. a:command_name
   let ft = a:ft == '' ? ft_keyword : printf('%s.%s', ft_keyword, a:ft)
-  let cmd = printf(a:command, a:word)
 
   " reuse keywordprg window if present
   if ft != &filetype
@@ -43,8 +158,19 @@ function! s:read_command_to_doc(word, command, command_name, ft) range
   endif
 
   " otherwise, create and configure it...
+  let cmd = printf(a:command, a:word)
   execute printf('silent ! %s > %s', cmd, fp)
   let shell_error = v:shell_error
+  if shell_error
+    for singular in s:possible_singulars(a:word)
+      let depluralize_attempt_cmd = printf(a:command, singular)
+      execute printf('silent ! %s > %s', depluralize_attempt_cmd, fp)
+      let shell_error = v:shell_error
+      if !shell_error
+        break
+      endif
+    endfor
+  endif
   execute printf('silent! %s %s', ft == &filetype ? 'edit!' : 'split!', fp)
   execute printf('set filetype=%s', ft)
   execute printf('setlocal keywordprg=:%s', a:command_name)
