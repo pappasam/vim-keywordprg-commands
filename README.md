@@ -1,6 +1,6 @@
 # vim-keywordprg-commands
 
-A simple, functional Neovim/Vim "`keywordprg` command" authoring utility. If you have a command line program that you want to use as a `keywordprg`, this plugin will quickly make that desire a reality.
+A simple, functional Neovim/Vim [keywordprg] command authoring utility. If you have a command line program that you want to use as a [keywordprg], this plugin will quickly make that desire a reality.
 
 ## Installation
 
@@ -16,7 +16,7 @@ From within Vim, type:
 
 ## Key mappings
 
-This plugin provides no mappings of its own, but it is intended to be used alongside Vim's built-in `keywordprg`. You should associate `keywordprg` commands Vim's `keywordprg` configuration value. For the plugin's provided commands, this can be done in your `init.vim` / `vimrc` as follows:
+This plugin provides no mappings of its own, but it is intended to be used alongside Vim's built-in [keywordprg]. You should associate [keywordprg] commands Vim's [keywordprg] configuration value. For the plugin's provided commands, this can be done in your `init.vim` / `vimrc` as follows:
 
 ```vim
 augroup custom_keywordprg
@@ -26,7 +26,7 @@ augroup custom_keywordprg
 augroup end
 ```
 
-For the above filetypes, if you type `K` while in normal mode, your `keywordprg` command will be used to look up the word under the cursor. If you type `K` while in visual mode, your `keywordprg` command will be used to look your visual selection.
+For the above filetypes, if you type `K` while in normal mode, your [keywordprg] command will be used to look up the word under the cursor. If you type `K` while in visual mode, your [keywordprg] command will be used to look your visual selection.
 
 If using the latest version of Neovim, you might find it helpful to map `K` to itself to prevent Neovim from remapping `K` to the built-in language server.
 
@@ -36,7 +36,7 @@ nnoremap K K
 
 ## Configurations
 
-Use `g:vim_keywordprg_commands` to create and configure new `keywordprg` commands. See its documentation by typing `:help g:vim_keywordprg_commands`.
+Use `g:vim_keywordprg_commands` to create and configure new [keywordprg] commands. See its documentation by typing `:help g:vim_keywordprg_commands`.
 
 ## Provided commands
 
@@ -53,3 +53,5 @@ This plugin prioritizes simplicity and ease of use on a POSIX-compliant system. 
 ## Written by
 
 Samuel Roeca _samuel.roeca@gmail.com_
+
+[keywordprg]: https://neovim.io/doc/user/options.html#'keywordprg'
