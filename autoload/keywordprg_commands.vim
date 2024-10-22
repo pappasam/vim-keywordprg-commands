@@ -8,7 +8,7 @@
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 function! s:possible_singulars(word)
-  let singulars = []
+  let mut_singulars = []
   let word = tolower(a:word)
 
   " Common irregular plurals
@@ -35,77 +35,77 @@ function! s:possible_singulars(word)
 
   " Check for irregular plurals
   if has_key(irregulars, word)
-    call add(singulars, irregulars[word])
+    call add(mut_singulars, irregulars[word])
   else
     " Rule 1: Remove 's' from the end
-    call add(singulars, word[:-2])
+    call add(mut_singulars, word[:-2])
 
     " Rule 2: Replace 'ies' with 'y'
     if word =~# 'ies$'
-      call add(singulars, substitute(word, 'ies$', 'y', ''))
+      call add(mut_singulars, substitute(word, 'ies$', 'y', ''))
     endif
 
     " Rule 3: Replace 'es' with ''
     if word =~# 'es$'
-      call add(singulars, substitute(word, 'es$', '', ''))
+      call add(mut_singulars, substitute(word, 'es$', '', ''))
     endif
 
     " Rule 4: Replace 'ves' with 'f'
     if word =~# 'ves$'
-      call add(singulars, substitute(word, 'ves$', 'f', ''))
+      call add(mut_singulars, substitute(word, 'ves$', 'f', ''))
     endif
 
     " Rule 5: Replace 'ves' with 'fe'
     if word =~# 'ves$'
-      call add(singulars, substitute(word, 'ves$', 'fe', ''))
+      call add(mut_singulars, substitute(word, 'ves$', 'fe', ''))
     endif
 
     " Rule 6: Replace 'i' with 'us'
     if word =~# 'i$'
-      call add(singulars, substitute(word, 'i$', 'us', ''))
+      call add(mut_singulars, substitute(word, 'i$', 'us', ''))
     endif
 
     " Rule 7: Replace 'a' with 'um'
     if word =~# 'a$'
-      call add(singulars, substitute(word, 'a$', 'um', ''))
+      call add(mut_singulars, substitute(word, 'a$', 'um', ''))
     endif
 
     " Rule 8: Replace 'ice' with 'ouse'
     if word =~# 'ice$'
-      call add(singulars, substitute(word, 'ice$', 'ouse', ''))
+      call add(mut_singulars, substitute(word, 'ice$', 'ouse', ''))
     endif
 
     " Rule 9: Replace 'en' with '' (for words like 'oxen')
     if word =~# 'en$'
-      call add(singulars, word[:-3])
+      call add(mut_singulars, word[:-3])
     endif
 
     " Rule 10: Replace 'ices' with 'ex'
     if word =~# 'ices$'
-      call add(singulars, substitute(word, 'ices$', 'ex', ''))
+      call add(mut_singulars, substitute(word, 'ices$', 'ex', ''))
     endif
 
     " Rule 11: Replace 'eaux' with 'eau'
     if word =~# 'eaux$'
-      call add(singulars, substitute(word, 'eaux$', 'eau', ''))
+      call add(mut_singulars, substitute(word, 'eaux$', 'eau', ''))
     endif
 
     " Rule 12: Replace 'ae' with 'a'
     if word =~# 'ae$'
-      call add(singulars, substitute(word, 'ae$', 'a', ''))
+      call add(mut_singulars, substitute(word, 'ae$', 'a', ''))
     endif
 
     " Rule 13: Handle words ending in 'ies' but not converting to 'y'
     if word =~# 'ies$' && len(word) > 4
       let stem = word[:-4]
       if stem =~# '[aeiou].$'
-        call add(singulars, stem . 'y')
+        call add(mut_singulars, stem . 'y')
       endif
     endif
 
     " Rule 14: Handle words ending in 'oes'
     if word =~# 'oes$'
-      call add(singulars, substitute(word, 'oes$', 'o', ''))
+      call add(mut_singulars, substitute(word, 'oes$', 'o', ''))
     endif
   endif
 
@@ -113,14 +113,14 @@ function! s:possible_singulars(word)
   let non_plural_endings = ['ss', 'us', 'is', 'sis']
   for ending in non_plural_endings
     if word =~# ending . '$'
-      call add(singulars, word)
+      call add(mut_singulars, word)
       break
     endif
   endfor
 
   " Remove duplicates, empty strings, and the original word if it's in the list
-  call filter(singulars, 'v:val != "" && v:val != word')
-  return uniq(singulars)
+  call filter(mut_singulars, 'v:val != "" && v:val != word')
+  return uniq(mut_singulars)
 endfunction
 
 function! s:select_win_same_ft(expected_ft)
@@ -160,21 +160,25 @@ function! s:read_command_to_doc(word, command, command_name, ft) range
   " otherwise, create and configure it...
   let cmd = printf(a:command, a:word)
   execute printf('silent ! %s > %s', cmd, fp)
-  let shell_error = v:shell_error
-  if shell_error
+  let mut_shell_error = v:shell_error
+  if mut_shell_error
     for singular in s:possible_singulars(a:word)
       let depluralize_attempt_cmd = printf(a:command, singular)
       execute printf('silent ! %s > %s', depluralize_attempt_cmd, fp)
-      let shell_error = v:shell_error
-      if !shell_error
+      let mut_shell_error = v:shell_error
+      if !mut_shell_error
         break
       endif
     endfor
+    if mut_shell_error
+      " re-run first command so that output is not silly
+      execute printf('silent ! %s > %s', cmd, fp)
+    endif
   endif
   execute printf('silent! %s %s', ft == &filetype ? 'edit!' : 'split!', fp)
   execute printf('set filetype=%s', ft)
   execute printf('setlocal keywordprg=:%s', a:command_name)
-  if shell_error
+  if mut_shell_error
     silent! call append(0, printf('No matches for "%s":', a:word))
     silent! call append(1, printf('  "%s" did not return any matches', cmd))
   endif
