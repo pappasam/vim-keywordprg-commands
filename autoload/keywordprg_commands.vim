@@ -107,6 +107,16 @@ function! s:possible_singulars(word)
     if word =~# 'oes$'
       call add(mut_singulars, substitute(word, 'oes$', 'o', ''))
     endif
+
+    " Rule 15: Replace 'ing' with ''
+    if word =~# 'ing$'
+      call add(mut_singulars, substitute(word, 'ing$', '', ''))
+    endif
+
+    " Rule 15: Replace 'ing' with 'e'
+    if word =~# 'ing$'
+      call add(mut_singulars, substitute(word, 'ing$', 'e', ''))
+    endif
   endif
 
   " Additional checks for words that might not be plural
