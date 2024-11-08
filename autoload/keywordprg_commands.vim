@@ -37,88 +37,58 @@ function! s:possible_singulars(word)
   if has_key(irregulars, word)
     call add(mut_singulars, irregulars[word])
   else
-    " Rule 1: Remove 's' from the end
-    call add(mut_singulars, word[:-2])
-
-    " Rule 2: Replace 'ies' with 'y'
+    if word =~# 's$'
+      call add(mut_singulars, substitute(word, 's$', '', ''))
+    endif
     if word =~# 'ies$'
       call add(mut_singulars, substitute(word, 'ies$', 'y', ''))
     endif
-
-    " Rule 3: Replace 'es' with ''
     if word =~# 'es$'
       call add(mut_singulars, substitute(word, 'es$', '', ''))
     endif
-
-    " Rule 4: Replace 'ves' with 'f'
     if word =~# 'ves$'
       call add(mut_singulars, substitute(word, 'ves$', 'f', ''))
     endif
-
-    " Rule 5: Replace 'ves' with 'fe'
     if word =~# 'ves$'
       call add(mut_singulars, substitute(word, 'ves$', 'fe', ''))
     endif
-
-    " Rule 6: Replace 'i' with 'us'
     if word =~# 'i$'
       call add(mut_singulars, substitute(word, 'i$', 'us', ''))
     endif
-
-    " Rule 7: Replace 'a' with 'um'
     if word =~# 'a$'
       call add(mut_singulars, substitute(word, 'a$', 'um', ''))
     endif
-
-    " Rule 8: Replace 'ice' with 'ouse'
     if word =~# 'ice$'
       call add(mut_singulars, substitute(word, 'ice$', 'ouse', ''))
     endif
-
-    " Rule 9: Replace 'en' with '' (for words like 'oxen')
     if word =~# 'en$'
       call add(mut_singulars, word[:-3])
     endif
-
-    " Rule 10: Replace 'ices' with 'ex'
     if word =~# 'ices$'
       call add(mut_singulars, substitute(word, 'ices$', 'ex', ''))
     endif
-
-    " Rule 11: Replace 'eaux' with 'eau'
     if word =~# 'eaux$'
       call add(mut_singulars, substitute(word, 'eaux$', 'eau', ''))
     endif
-
-    " Rule 12: Replace 'ae' with 'a'
     if word =~# 'ae$'
       call add(mut_singulars, substitute(word, 'ae$', 'a', ''))
     endif
-
-    " Rule 13: Handle words ending in 'ies' but not converting to 'y'
     if word =~# 'ies$' && len(word) > 4
       let stem = word[:-4]
       if stem =~# '[aeiou].$'
         call add(mut_singulars, stem . 'y')
       endif
     endif
-
-    " Rule 14: Handle words ending in 'oes'
     if word =~# 'oes$'
       call add(mut_singulars, substitute(word, 'oes$', 'o', ''))
     endif
-
-    " Rule 15: Replace 'ing' with ''
     if word =~# 'ing$'
       call add(mut_singulars, substitute(word, 'ing$', '', ''))
     endif
-
-    " Rule 15: Replace 'ing' with 'e'
     if word =~# 'ing$'
       call add(mut_singulars, substitute(word, 'ing$', 'e', ''))
     endif
   endif
-
   " Additional checks for words that might not be plural
   let non_plural_endings = ['ss', 'us', 'is', 'sis']
   for ending in non_plural_endings
@@ -127,7 +97,6 @@ function! s:possible_singulars(word)
       break
     endif
   endfor
-
   " Remove duplicates, empty strings, and the original word if it's in the list
   call filter(mut_singulars, 'v:val != "" && v:val != word')
   return uniq(mut_singulars)
