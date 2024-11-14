@@ -37,14 +37,14 @@ Example: dictionary lookups
 Assume you want to look up the definition of an English word. If you have the
 "dict" program installed locally along with the gcide dictionary, you can use
 the following configuration to create a Vim command named "Def" to look up
-English words: >
+English words: >vim
 
   let g:vim_keywordprg_commands = {
       \ 'Def': 'dict -d gcide %s',
       }
 
 "%s" will be replaced by the word you pass as an argument to the command. To
-look up the English definition for "cat", type: >
+look up the English definition for "cat", type: >vim
 
   :Def cat
 
@@ -52,7 +52,7 @@ Example: pydoc
 
 Assume you want to use Python's "pydoc" utility to look up a Python keyword.
 Additionally, you'd like pydoc's output (which is written in reStructuredText)
-to be syntax highlighted. Use the following configuration: >
+to be syntax highlighted. Use the following configuration: >vim
 
   let g:vim_keywordprg_commands = {
       \ 'Pydoc': ['pydoc %s', 'rst'],
@@ -63,7 +63,7 @@ first list element represents the command line program (identical to our
 dictionary example). The second argument provides an optional filetype to
 associate with our documentation and take advantage of Vim's syntax
 highlighting. Now, to look up Python documentation for "class" with beautiful
-reStructuredText syntax highlighting, use the following Vim command: >
+reStructuredText syntax highlighting, use the following Vim command: >vim
 
   :Pydoc class
 
@@ -80,9 +80,17 @@ filetype, place your desired filetype in this configuration variable.
 
 By default, this plugin creates the following keywordprg commands:
 
-*:DefEng* look up a word's English definition using dict-wn
-*:SynEng* look up a word's English synonyms using dict-moby-thesaurus.
-*:Pydoc* look up a Python keyword using pydoc.
+:DefEng                                                               *:DefEng*
+
+  Look up a word's English definition using dict-wn
+
+:SynEng                                                               *:SynEng*
+
+  Look up a word's English synonyms using dict-moby-thesaurus.
+
+:Pydoc                                                                 *:Pydoc*
+
+  Look up a Python keyword using pydoc.
 
 It is trivial to write your own. Feel free to submit a pull request with
 anything useful keywordprg commands you come up with!
@@ -94,7 +102,7 @@ anything useful keywordprg commands you come up with!
 This plugin provides no mappings of its own, but it is intended to be used
 alongside Vim's built-in keywordprg. You should associate keywordprg commands
 Vim's keywordprg configuration value. For the plugin's provided commands, this
-can be done in your init.vim/vimrc as follows: >
+can be done in your init.vim/vimrc as follows: >vim
 
   augroup custom_keywordprg
     autocmd!
