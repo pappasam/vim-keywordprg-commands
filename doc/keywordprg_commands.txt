@@ -14,9 +14,9 @@ Table of Contents
                                                     *keywordprg_commands_intro*
 1. INTRODUCTION~
 
-This plugin makes it easy to write keywordprg commands. If you have a command
-line program that you want to use as a keywordprg, this plugin will quickly
-make that desire a reality.
+This plugin makes it easy to write 'keywordprg' commands. If you have a
+command line program that you want to use with 'keywordprg', this plugin will
+quickly make that desire a reality.
 
 ==============================================================================
                                             *keywordprg_commands_configuration*
@@ -27,10 +27,10 @@ Type: Dictionary[String, Union[String, List[String]]]
 Default: defined in plugin/keywordprg_commands.vim
 
 If you have a command line program that you want to use to look up keywords,
-use this variable to configure it. The dictionary keys should be the names of a
-Vim commands that you want to create; their values are printf-formatted string
-representations of a command line program to associate with the Vim command
-provided in the Dictionary key.
+use this variable to configure it. The dictionary keys should be the names of
+a Vim commands that you want to create; their values are printf-formatted
+string representations of a command line program to associate with the Vim
+command provided in the Dictionary key.
 
 Example: dictionary lookups
 
@@ -58,8 +58,8 @@ to be syntax highlighted. Use the following configuration: >vim
       \ 'Pydoc': ['pydoc %s', 'rst'],
       }
 
-Notice that the value is not a string, but is instead of list of 2 strings. The
-first list element represents the command line program (identical to our
+Notice that the value is not a string, but is instead of list of 2 strings.
+The first list element represents the command line program (identical to our
 dictionary example). The second argument provides an optional filetype to
 associate with our documentation and take advantage of Vim's syntax
 highlighting. Now, to look up Python documentation for "class" with beautiful
@@ -71,14 +71,14 @@ reStructuredText syntax highlighting, use the following Vim command: >vim
 Type: String
 Default: ''
 
-If, by default, you'd like to associate keywordprg commands with a particular
-filetype, place your desired filetype in this configuration variable.
+If, by default, you'd like to associate a command with a particular filetype,
+place your desired filetype in this configuration variable.
 
 ==============================================================================
                                                  *keywordprg_commands_commands*
 3. COMMANDS~
 
-By default, this plugin creates the following keywordprg commands:
+By default, this plugin creates the following 'keywordprg' commands:
 
 :DefEng                                                               *:DefEng*
 
@@ -92,17 +92,22 @@ By default, this plugin creates the following keywordprg commands:
 
   Look up a Python keyword using pydoc.
 
-It is trivial to write your own. Feel free to submit a pull request with
-anything useful keywordprg commands you come up with!
+You can create these commands yourself in the following way: >vim
+
+  let g:vim_keywordprg_commands = {
+      \ 'DefEng': 'dict -d wn %s',
+      \ 'Pydoc': ['pydoc %s', 'rst'],
+      \ 'SynEng': 'dict -d moby-thesaurus %s',
+      \ }
 
 ==============================================================================
                                                  *keywordprg_commands_mappings*
 4. MAPPINGS~
 
 This plugin provides no mappings of its own, but it is intended to be used
-alongside Vim's built-in keywordprg. You should associate keywordprg commands
-Vim's keywordprg configuration value. For the plugin's provided commands, this
-can be done in your init.vim/vimrc as follows: >vim
+with Vim's built-in 'keywordprg'. You should associate your commands to Vim's
+'keywordprg' configuration value. For the plugin's provided commands, this can
+be done in your init.vim/vimrc as follows: >vim
 
   augroup custom_keywordprg
     autocmd!
@@ -110,10 +115,9 @@ can be done in your init.vim/vimrc as follows: >vim
     autocmd FileType python setlocal keywordprg=:Pydoc
   augroup end
 
-For the above filetypes, if you type "K" while in normal mode, your keywordprg
-command will be used to look up the word under the cursor. If you type "K"
-while in visual mode, your keywordprg command will be used to look your visual
-selection.
+For the above filetypes, if you type "K" while in normal mode, your command
+will be used to look up the word under the cursor. If you type "K" while in
+visual mode, your command will be used to look your visual selection.
 
 ==============================================================================
                                                   *keywordprg_commands_credits*
